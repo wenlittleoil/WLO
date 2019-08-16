@@ -95,3 +95,22 @@ export default ImgWithPressLog;
 
 ## 4  
 iphone7某些ios微信版本中，微信网页api授权不支持h5路由的history模式，若使用history模式，页面路由发生跳转后会导致授权失败，从而导致无法调起微信上传图片等微信api。解决方式为：在当前的路由页面内重新调用后端接口wxconf，获取授权数据后在前端再调用wx.config获取jssdk的api授权验证。
+
+## 5
+移动端页面悬浮底部的固定定位按钮。
+使用如下css方式会导致在ios微信中，首次点击按钮失效，点击第二次才有效果.
+
+> 错误示例：
+```
+position: fixed;
+left: 0;
+right: 0;
+bottom: 0;
+```
+> 正确示例：
+```
+position: fixed;
+left: 50%;
+transform: translateX(-50%);
+bottom: 0;
+```
