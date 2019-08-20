@@ -114,3 +114,5 @@ left: 50%;
 transform: translateX(-50%);
 bottom: 0;
 ```
+## 6
+ctrl + c 或 菜单键复制 的原生copy事件对pc端支持不错，对m端支持性不佳。m端可使用三方库clipboard或react-copy-to-clipboard来解决。
