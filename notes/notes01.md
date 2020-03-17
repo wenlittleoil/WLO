@@ -116,3 +116,19 @@ bottom: 0;
 ```
 ## 6
 ctrl + c 或 菜单键复制 的原生copy事件对pc端支持不错，对m端支持性不佳。m端可使用三方库clipboard或react-copy-to-clipboard来解决。
+
+## 7
+mysql数据表中，以bigint(20) 数据类型存储订单号（例如201902191734473812），由于js精度限制，获取出来的数据会出现失准的异常情况.
+解决方式为: 查询数据表时使用cast函数将数据类型转变为char(64)的字符串形式。
+示例：
+```
+  SELECT
+  id, `CAST(exchange_id AS CHAR(64)) AS exchange_id`, exchange_title, amount, create_time,
+  contact_name, contact_phone, address, status
+  FROM exchange
+  WHERE user_id = :studentId
+  AND status != -1
+  ORDER BY create_time DESC
+  LIMIT :offset, :pageSize;
+```
+
