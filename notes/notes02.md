@@ -1,6 +1,6 @@
 ## 8
 问题：移动端h5页面在高清屏中1px显示过粗。  
-解决方式：利用css的媒体查询或者js的window.devicePixelRatio获得设备像素比，根据该值，对1px元素进行y轴方向的缩放。  
+解决方式：利用css的媒体查询或者js的window.devicePixelRatio获得设备像素比，根据该值，对1px元素进行y轴方向相应倍率的缩小。  
 css示例：
 ```
 // 对.target-element元素设置底部1px边框
