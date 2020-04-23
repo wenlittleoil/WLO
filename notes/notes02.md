@@ -25,4 +25,86 @@ css示例：
 }
 ```  
   
+## 9
+根据一个数组，排队逐个请求后端接口，每一次都等待上一个接口返回响应后才开始发起下一个接口请求。  
+```  
+  // 目标数组
+  const idList = ids.split(/\s+/gi);
+
+  // 请求开始，设置加载中
+  this.setState({
+    loading: true,
+  });
+
+  const results = await idList.reduce(async (prevReqPromise, id, idx) => {
+    // 等待上一个接口请求的resolve，且resolve后的结果数组保存了之前所有的请求结果
+    const middleResults = await prevReqPromise;
+
+    // 组装当前这个请求的参数
+    const bodyParams = {
+      id,
+    }
+
+    // 发起当前请求
+    try {
+      await request.json(
+        api.newUpdateClazzPlan,
+        bodyParams,
+      );
+
+      // 当前请求的结果1(成功)
+      const result = {
+        status: 'success',
+        id,
+      };
+      middleResults.push(result);
+    } catch (error) {
+      // 当前请求的结果2(失败)
+      const result = {
+        status: 'failture',
+        id,
+      };
+      middleResults.push(result);
+    }
+
+    // 关键一步，将当前请求的结果放入中间数组中并返回
+    return middleResults;
+  }, Promise.resolve([]));
+
+  // 所有请求都已结束，且所有的请求结果都放在results数组中，开始进行请求后的ui响应(例如弹窗通知用户多少个请求成功，多少个失败了)
+  const failtureResults = results.filter(item => item.status === 'failture');
+  if (failtureResults.length) {
+    Modal.info({
+      id: 
+        `${failtureResults.length}个课时更新失败`,
+      content: (
+        <div
+          style={{
+            maxHeight: '600px',
+            overflowY: 'scroll',
+          }}
+        >
+          <h4>更新失败的课时列表：</h4>
+          {failtureResults.map((item) => (
+            <p 
+              key={item.id}
+            >
+              课时:
+              {item.id}
+            </p>
+          ))}
+        </div>
+      ),
+    });
+  } else {
+    message.info('批量修改课时成功');
+  }
+
+  // 关闭loading
+  this.setState({
+    loading: false,
+  });
+```  
+
+
   
