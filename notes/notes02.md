@@ -112,6 +112,50 @@ nextjs生命周期
 > 2、componentwillmount和render在服务端渲染时，在服务端和客户端会先后都执行一次。但在客户端渲染时只会在客户端执行一次。  
 > 3、componentdidmount无论客户端渲染还是服务端渲染，只会在客户端执行一次。  
 
-  
+## 11
+Nginx反向代理配置
+> sudo vim /etc/nginx/nginx.conf
+```
+http {
+
+        server {
+            listen 8000;
+            server_name localhost;
+
+            # For the API service
+            location /api {
+              proxy_pass http://localhost:8008;
+              proxy_set_header Host $host;
+
+              # proxy_hide_header Cache-Control;
+              
+              # Through Nginx Proxy, for browser,
+              # both API and Resource request are on the same domain,
+              # it doesn't need to set CORS headers,
+              # so on the below, 
+              # some headers from upstream server were set hidden to client.
+              proxy_hide_header Access-Control-Allow-Credentials;
+              proxy_hide_header Access-Control-Allow-Headers;
+              proxy_hide_header Access-Control-Allow-Origin;
+              
+              # By default, some headers from upstream server, such as Server
+              # etc was blocked, then Nginx use its own headers for client,
+              # in this case, it's 'Server: nginx/1.14 (Ubuntu)'.
+              # but now we ban such behavior, Server header will be totally
+              # decided by the upstream server.
+              proxy_pass_header Server;
+
+            }
+
+            # For the Frontend Resource service
+            location / {
+              proxy_pass http://localhost:8002;
+            }
+        }
+
+}
+```   
+> sudo nginx -t
+> sudo nginx -s reload
   
   
