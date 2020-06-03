@@ -155,7 +155,7 @@ http {
 
 }
 ```   
-> sudo nginx -t
+> sudo nginx -t  
 > sudo nginx -s reload
   
   
