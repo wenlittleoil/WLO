@@ -157,5 +157,37 @@ http {
 ```   
 > sudo nginx -t  
 > sudo nginx -s reload
+    
   
+## 12  
+NodeJs流式压缩加密文件  
+```  
+const path = require('path');
+const fs = require('fs');
+const zlib = require('zlib');
+const crypto = require('crypto');
+
+const fileSrc = path.resolve(__dirname, './test2-bigfile.log');
+const basename = path.basename(fileSrc, '.log');
+const fileTar = `./${basename}.gz`;
+
+const src = fs.createReadStream(fileSrc);
+const tar = fs.createWriteStream(fileTar);
+src.pipe(zlib.createGzip()).pipe(crypto.createCipher('aes192', '111222')).pipe(tar);
+
+// src.on('end', () => {
+//   fs.stat(fileTar, (err, stats) => {
+//     console.log(err, stats)
+//   })
+// });
+tar.on('finish', () => {
+  fs.stat(fileTar, (err, stats) => {
+    console.log(err, stats)
+  })
+});
+```  
+  
+  
+  
+
   
