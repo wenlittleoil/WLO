@@ -187,7 +187,23 @@ tar.on('finish', () => {
 });
 ```  
   
-  
+## 13  
+模拟使用背景图撑开容器元素，css代码如下：  
+```
+.container{
+  background: url('/target.jpg');
+  background-repeat:no-repeat; 
+  background-size:100% 100%;
+  background-position-x: center;
+  margin: 0 auto;
+}
+.container::after {
+  content: "";
+  display: block;
+  /* `height/width` radio from target.jpg */
+  padding-bottom: 40.1%;
+}
+```
   
 
   
