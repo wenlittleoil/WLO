@@ -189,6 +189,7 @@ tar.on('finish', () => {
   
 ## 13  
 模拟使用背景图撑开容器元素，css代码如下：  
+原理：padding-bottom percentages refer to the width of the containing block
 ```
 .container{  
   /* target.jpg 1920*770 unit px */
