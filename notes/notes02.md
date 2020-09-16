@@ -210,7 +210,7 @@ tar.on('finish', () => {
 ```
 
 ## 14
-antd的动态表单组件，代码如下：
+antd的动态表单组件，代码如下：  
 1.定义组件DynamicField.js
 ```  
 import React from 'react';
@@ -333,12 +333,17 @@ DynamicFieldSet.defaultProps = {
 
 export default Form.create({ name: 'dynamic_form_item' })(DynamicFieldSet);
 ```  
-2.使用组件DynamicField.js
+2.react中使用组件DynamicField.js
 ```
+  // 定义ref
+  let dutysInstance = createRef();
+  
+  // 校验并使用动态表单值
   dutysInstance.props.form.validateFields(async (errors, values) => {
      console.log('values: ', values);
   });
   
+  // 动态表单jsx
   <DynamicField
     wrappedComponentRef={(instance) => dutysInstance = instance}
     defaultVals={['完成计划评估和制定', '按时完成工作']}
