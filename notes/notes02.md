@@ -208,6 +208,142 @@ tar.on('finish', () => {
   padding-bottom: 40.1%;
 }
 ```
+
+## 14
+antd的动态表单组件，代码如下：
+1.定义组件DynamicField.js
+```  
+import React from 'react';
+import { Form, Input, Icon, Button } from 'antd';
+import PropTypes from 'prop-types'; 
+
+const formItemLayout = {
+  labelCol: {
+    span: 2
+  },
+  wrapperCol: {
+    span: 22
+  },
+};
+const formItemLayoutWithOutLabel = {
+  wrapperCol: {
+    offset: 2,
+    span: 22,
+  },
+};
+
+class DynamicFieldSet extends React.Component {
+
+  remove = k => {
+    const { form } = this.props;
+    // can use data-binding to get
+    const keys = form.getFieldValue('keys');
+    // We need at least one
+    if (keys.length === 1) {
+      return;
+    }
+
+    // can use data-binding to set
+    form.setFieldsValue({
+      keys: keys.filter(key => key !== k),
+    });
+  };
+
+  add = () => {
+    const { form } = this.props;
+    // can use data-binding to get
+    const keys = form.getFieldValue('keys');
+    const last = keys[keys.length - 1] + 1;
+    const nextKeys = keys.concat(last);
+    // can use data-binding to set
+    // important! notify form to detect changes
+    form.setFieldsValue({
+      keys: nextKeys,
+    });
+  };
+
+  render() {
+    const { defaultVals, } = this.props;
+    const { getFieldDecorator, getFieldValue } = this.props.form;
+    
+    // 使用getFieldDecorator来设定表单初始keys
+    const defaultKeys = defaultVals.map((val, key) => key);
+    getFieldDecorator('keys', { initialValue: defaultKeys });
+    const _defaultVals = {}
+    defaultVals.forEach((val, index) => {
+      _defaultVals[index] = val;
+    });
+
+    const keys = getFieldValue('keys');
+
+    const formItems = keys.map((k, index) => {
+      return (
+        <Form.Item
+          {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
+          label={index === 0 ? `岗位职责` : ''}
+          key={k}
+        >
+          {getFieldDecorator(`vals.${k}`, {
+            initialValue: _defaultVals[k],
+            validateTrigger: ['onChange', 'onBlur'],
+            rules: [
+              {
+                required: true,
+                message: `请输入岗位职责项`,
+              },
+            ],
+          })(
+            <Input 
+              placeholder={`请输入岗位职责项`} 
+              style={{ width: '60%', marginRight: 8 }} 
+            />
+          )}
+          {keys.length > 1 ? (
+            <Icon
+              className="dynamic-delete-button"
+              type="minus-circle-o"
+              onClick={() => this.remove(k)}
+            />
+          ) : null}
+        </Form.Item>
+      );
+    });
+    
+    
+    return (
+      <Form>
+        {formItems}
+        <Form.Item {...formItemLayoutWithOutLabel}>
+          <Button type="dashed" onClick={this.add} style={{ width: '60%' }}>
+            <Icon type="plus" /> 增加岗位职责项
+          </Button>
+        </Form.Item>
+      </Form>
+    );
+  }
+}
+
+DynamicFieldSet.propTypes = {
+  form: PropTypes.object.isRequired,
+  defaultVals: PropTypes.arrayOf(PropTypes.string).isRequired,
+}
+
+DynamicFieldSet.defaultProps = {
+}
+
+export default Form.create({ name: 'dynamic_form_item' })(DynamicFieldSet);
+```  
+2.使用组件DynamicField.js
+```
+  dutysInstance.props.form.validateFields(async (errors, values) => {
+     console.log('values: ', values);
+  });
   
+  <DynamicField
+    wrappedComponentRef={(instance) => dutysInstance = instance}
+    defaultVals={['完成计划评估和制定', '按时完成工作']}
+  />
+```
+
 
   
