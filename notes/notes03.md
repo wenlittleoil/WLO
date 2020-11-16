@@ -43,7 +43,7 @@ ii.外部样式表的这种行为和外部脚本完全不同。引入的外部�
 对于接口有调用频率限制的第三方服务，进行频率限流如下  
 ```
     for (let i = 0; i < list.length; i++) {
-      await ctx.service.thirdPartyService({
+      await ctx.service.thirdPartyServiceApiCall({
          data: list[i]
       });
       // 限流，每80ms调用一次服务接口
