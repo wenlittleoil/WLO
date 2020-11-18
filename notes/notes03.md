@@ -73,6 +73,26 @@ async function init() {
 }
 init(); // Error无法被捕获，直接被抛出到顶层
 ```  
+相反，而以下错误能正常捕获到
+```
+async function foo() {
+  await new Promise((res, rej) => {
+         setTimeout(() => {
+             console.log(111);
+             res();
+          }, 5000);
+  });
+  throw new Error('我是错误异常');
+}
+async function init() {
+   try {
+      await foo();
+   } catch (error) {
+      console.log('正常捕获了错误', error.message);
+   }
+}
+init(); // 这次能正常地捕获到错误异常
+```
 
 
 
