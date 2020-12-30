@@ -92,7 +92,51 @@ async function init() {
    }
 }
 init(); // 这次能正常地捕获到错误异常
+``` 
+
+## 18. 
 ```
+/**
+ * build2Tree 方法
+ * 将扁平化的数组nodes根据节点项id, pid 和 children 将一个个节点构建成一棵或者多棵树
+ * @param nodes 节点对象数组
+ * @param config 配置对象
+ */
+function build2Tree(nodes = [], config = {}) {
+  const id = config?.id || 'id';
+  const pid = config?.pid || 'pid';
+  const children = config?.children || 'children';
+  const mapping = config?.mapping || {};
+  const attribute = config?.attribute || {};
+
+  const idMap = {};
+  const jsonTree = [];
+
+  nodes.forEach((node) => { node && (idMap[node[id]] = node); });
+  nodes.forEach((node) => {
+    if (node) {
+      Object.keys(mapping).map((item) => {
+        node[item] = node[mapping[item]];
+        return node;
+      });
+      Object.keys(attribute).map((item) => {
+        node[item] = attribute[item];
+        return node;
+      });
+      const parent = idMap[node[pid]];
+      if (parent) {
+        !parent[children] && (parent[children] = []);
+        parent[children].push(node);
+      } else {
+        jsonTree.push(node);
+      }
+    }
+  });
+  return jsonTree;
+}
+```  
+
+
 
 
 
