@@ -99,6 +99,7 @@ init(); // 这次能正常地捕获到错误异常
 /**
  * build2Tree 方法
  * 将扁平化的数组nodes根据节点项id, pid 和 children 将一个个节点构建成一棵或者多棵树
+ * 另外还支持对节点项对象添加额外的属性
  * @param nodes 节点对象数组
  * @param config 配置对象
  */
