@@ -140,7 +140,8 @@ function build2Tree(nodes = [], config = {}) {
 使用方式如下:
 ```
 const sourcePlatList = [{"id":"1","name":"深圳**科技有限公司","departmentId":"1","parentId":0,"count":27,"sortOrder":100000000},{"id":"5","name":"人力","departmentId":"5","parentId":1,"count":1,"sortOrder":99997000},{"id":"6","name":"产品","departmentId":"6","parentId":1,"count":4,"sortOrder":99996000},{"id":"7","name":"UI","departmentId":"7","parentId":6,"count":1,"sortOrder":100000000},{"id":"8","name":"PM","departmentId":"8","parentId":6,"count":3,"sortOrder":99999000},{"id":"9","name":"平面","departmentId":"9","parentId":7,"count":0},{"id":"10","name":"视觉","departmentId":"10","parentId":9,"count":0}];
-build2Tree(sourcePlatList, { id: 'id', pid: 'parentId', mapping: { key: 'id', title: 'name'}});
+const resultTreeList = build2Tree(sourcePlatList, { id: 'id', pid: 'parentId', mapping: { key: 'id', title: 'name'}});
+console.log(resultTreeList);
 ```
 
 
