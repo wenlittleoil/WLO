@@ -136,7 +136,11 @@ function build2Tree(nodes = [], config = {}) {
   });
   return jsonTree;
 }
-```  
+```
+使用方式如下:
+```
+build2Tree(sourcePlatList, { id: 'id', pid: 'parentId', mapping: { key: 'id', title: 'name'}});
+```
 
 
 
