@@ -144,7 +144,36 @@ const resultTreeList = build2Tree(sourcePlatList, { id: 'id', pid: 'parentId', m
 console.log(resultTreeList);
 ```
 
+## 19. 
+通过给margin负值，能使子元素向外扩张，例子如下：
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>测试css</title>
+  <style>
+    .father {
+      width: 400px;
+      height: 300px;
+      background-color: lightgray;
+      padding: 10px;
+    }
+    .son {
+      height: 100px;
+      background-color: cyan;
 
+      /* 当给子元素margin负值时，能使内容向外扩张 */
+      margin: -10px -10px 10px -10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="father">
+    <div class="son"></div>
+  </div>
+</body>
+</html>
+```
 
 
 
