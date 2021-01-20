@@ -175,6 +175,33 @@ console.log(resultTreeList);
 </html>
 ```
 
-
+## 20. 
+全局设置浏览器自带的滚动条，例子如下：
+```
+/*滚动条凹槽轨道的颜色，还可设置边框属性 */
+*::-webkit-scrollbar-track-piece {
+  background-color: #f8f8f8;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+/*滚动条的宽度*/
+*::-webkit-scrollbar {
+  width: 8px; // 垂直滚动条生效宽度
+  height: 8px; // 水平滚动条生效高度
+}
+/*滚动条滚轴的设置*/
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, .15);
+  background-clip: padding-box;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+/*滚动条鼠标悬浮移上去*/
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, .15);
+}
+```
 
 
