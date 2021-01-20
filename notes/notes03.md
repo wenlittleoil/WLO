@@ -176,7 +176,7 @@ console.log(resultTreeList);
 ```
 
 ## 20. 
-全局设置浏览器自带的滚动条，例子如下：
+全局设置浏览器自带的滚动条样式，例子如下：
 ```
 /*滚动条凹槽轨道的颜色，还可设置边框属性 */
 *::-webkit-scrollbar-track-piece {
