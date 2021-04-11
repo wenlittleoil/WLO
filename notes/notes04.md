@@ -9,7 +9,7 @@ $ ls -al
   -rw-r--r--    1 wen  staff     876  3 25 00:29 package.json
   drwxr-xr-x    4 wen  staff     128  3 25 00:32 src
   ...
-# 将产物 dist/ 覆盖同步到远程生产机的相应nginx资源服务目录，其中 --delete 表示会先删除原有目录文件
+# 将产物 dist/ 覆盖同步到远程生产机的相应nginx资源服务目录，其中 --delete 表示会先删除远程目标目录原有文件
 $ rsync --delete -avz dist/ root@192.168.0.1:~/app/blog/frontend/dist/
 # 注意上述脚本命令需要提前先配置构建机和生产机之间的免密登录，或者使用如下方式：
 $ sudo apt-get install sshpass
