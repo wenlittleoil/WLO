@@ -16,4 +16,12 @@ $ sudo apt-get install sshpass
 $ sshpass -p "$PROD_PASSWORD" rsync --delete -avz dist/ root@192.168.0.1:~/app/blog/frontend/dist/
 ```  
   
-  
+## 22. 
+交换数组中的两项位置顺序
+```
+function getSwitchPositionArr(list: any[], sourceIndex: number, targetIndex: number) {
+  const arr = [...list];
+  arr[sourceIndex] = arr.splice(targetIndex, 1, arr[sourceIndex])[0];
+  return arr;
+}
+```
