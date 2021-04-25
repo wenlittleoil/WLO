@@ -9,11 +9,16 @@ $ ls -al
   -rw-r--r--    1 wen  staff     876  3 25 00:29 package.json
   drwxr-xr-x    4 wen  staff     128  3 25 00:32 src
   ...
+  
 # 将产物 dist/ 覆盖同步到远程生产机的相应nginx资源服务目录，其中 --delete 表示会先删除远程目标目录原有文件
-$ rsync --delete -avz dist/ root@192.168.0.1:~/app/blog/frontend/dist/
-# 注意上述脚本命令需要提前先配置构建机和生产机之间的免密登录，或者使用如下方式：
-$ sudo apt-get install sshpass
-$ sshpass -p "$PROD_PASSWORD" rsync --delete -avz dist/ root@192.168.0.1:~/app/blog/frontend/dist/
+$ rsync --delete -avz dist/ root@192.168.0.1:~/app/blog/frontend/dist/    # command1
+
+# 注意上述脚本命令`command1`需要提前先配置构建机和生产机之间的免密登录，或者使用如下方式：
+$ sudo apt-get -y install sshpass
+$ sshpass -p "$PROD_PASSWORD" rsync --delete -avz dist/ root@192.168.0.1:~/app/blog/frontend/dist/    # command2
+
+# 注意若上述脚本命令`command2`出现错误`Host key verification failed. rsync error: unexplained error...`则用如下方式：
+$ rsync --rsh="sshpass -p $PROD_PASSWORD ssh -o StrictHostKeyChecking=no -l root" --delete -avz dist/ root@192.168.0.1:~/app/blog/frontend/dist/
 ```  
   
 ## 22. 
