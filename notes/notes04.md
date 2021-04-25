@@ -18,7 +18,7 @@ $ sudo apt-get -y install sshpass
 $ sshpass -p "$PROD_PASSWORD" rsync --delete -avz dist/ root@192.168.0.1:~/app/blog/frontend/dist/    # command2
 
 # 注意若上述脚本命令`command2`出现错误`Host key verification failed. rsync error: unexplained error...`则用如下方式：
-$ rsync --rsh="sshpass -p $PROD_PASSWORD ssh -o StrictHostKeyChecking=no -l root" --delete -avz dist/ root@192.168.0.1:~/app/blog/frontend/dist/
+$ rsync --rsh="sshpass -p $PROD_PASSWORD ssh -o StrictHostKeyChecking=no -l root" --delete -avzr dist/ root@192.168.0.1:~/app/blog/frontend/dist/
 ```  
   
 ## 22. 
