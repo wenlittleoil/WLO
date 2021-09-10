@@ -30,3 +30,16 @@ function getSwitchPositionArr(list: any[], sourceIndex: number, targetIndex: num
   return arr;
 }
 ```
+
+## 23. 
+对于一个内部可滚动的元素容器，但内部不显示滚动条的css设置
+```css
+.scrollable_container_element {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+```
+
