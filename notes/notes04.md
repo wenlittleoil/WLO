@@ -43,3 +43,71 @@ function getSwitchPositionArr(list: any[], sourceIndex: number, targetIndex: num
 }
 ```
 
+## 24. 
+node和浏览器环境中js执行顺序机制：同步代码->异步微任务->异步宏任务->结束
+```
+if (typeof setImmediate !== 'undefined') {
+  setImmediate(() => {
+    // 异步宏任务
+    console.log('immediate');
+  });
+}
+
+async function async1() {
+  // 同步执行
+  console.log('async1 start');
+  // 同步执行
+  await async2();
+  // 异步微任务
+  console.log('async1 end');
+}
+
+async function async2() {
+  // 同步执行
+  console.log('async2');
+}
+
+// 同步执行
+console.log('start');
+
+setTimeout(() => {
+  // 异步宏任务 优先级比setImmediate高
+  console.log('timeout');
+}, 0);
+
+// 同步执行
+async1();
+
+new Promise((resolve) => {
+  // 同步执行
+  console.log('promise fn');
+  resolve();
+}).then(() => {
+  // 异步微任务，相当于async函数内部await后面代码，优先级一样，按注册顺序
+  console.log('promise then');
+});
+
+if (typeof process !== 'undefined') {
+  process.nextTick(() => {
+    // 异步微任务 优先级最高
+    console.log('nextTick');
+  });
+}
+
+// 同步执行
+console.log('end');
+```  
+控制台如下输出：
+``` 
+  start
+  async1 start
+  async2
+  promise fn
+  end
+  nextTick
+  async1 end
+  promise then
+  timeout
+  immediate
+```
+
