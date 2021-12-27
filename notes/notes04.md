@@ -83,7 +83,7 @@ new Promise((resolve) => {
   console.log('promise fn');
   resolve();
 }).then(() => {
-  // 异步微任务，相当于async函数内部await后面代码，优先级一样，按注册顺序
+  // 异步微任务，相当于async函数内部await下一行后面代码，优先级一样，按注册顺序来
   console.log('promise then');
 });
 
