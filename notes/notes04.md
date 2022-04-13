@@ -110,4 +110,43 @@ console.log('end');
   timeout
   immediate
 ```
-
+  
+## 25. 
+css布局技术：‘上背景图+中间可动态根据内容高度拉伸背景图+下背景图’。
+html代码如下：
+```
+    <div class="with-bg-box">
+      <div class="box-body">
+        {children}
+      </div>
+    </div>
+```
+相应的css代码如下：
+```
+.with-bg-box {
+  width: 88px; // 大外盒宽度
+  min-height: 47px; // 上图高度+下图高度
+  background-image: url('./imgs/top.png'), url('./imgs/bottom.png');
+  background-repeat: no-repeat, no-repeat;
+  background-position: center top, center bottom;
+  background-size: 100% auto;
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: -1px 0;
+    background: url('./imgs/middle.png') repeat-y;
+    background-size: 100% auto;
+    z-index: -1;
+    top: 38px; // 上图高度
+    bottom: 9px; // 下图高度
+  }
+  .box-body {
+    margin: 0 4px;
+  }
+}
+```
+  
+  
