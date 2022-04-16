@@ -150,7 +150,7 @@ html代码如下：
 ```
   
 ## 26. 
-NodeJs与RabbitMQ. 
+NodeJs与RabbitMQ.   
 一、发送消息send.js
 ```
 const amqp = require('amqplib/callback_api');
