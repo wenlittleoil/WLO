@@ -149,4 +149,81 @@ html代码如下：
 }
 ```
   
+## 26. 
+NodeJs与RabbitMQ
+一、发送消息send.js
+```
+const amqp = require('amqplib/callback_api');
+amqp.connect('amqp://localhost', (error0, connection) => {
+  if (error0) {
+    console.log('[connect-error]', error0);
+    return;
+  }
+  connection.createChannel((error1, channel) => {
+    if (error1) {
+      console.log('[createChannel-error]', error1);
+      return;
+    }
+    
+    // declare queue name
+    const queue = 'my-queue-name-01';
+    
+    // message data
+    const msg = 'hello world';
+    
+    channel.assertQueue(queue, {
+      durable: false,
+    });
+
+    // send message to queue
+    channel.sendToQueue(queue, Buffer.from(msg));
+    console.log('message has been send to queue successfully.');
+
+  });
   
+  // exit process after message was send
+  setTimeout(() => {
+    connection.close();
+    process.exit(0);
+  }, 500);
+});
+```
+二、接收消费消息receive.js
+```
+const amqp = require('amqplib/callback_api');
+amqp.connect('amqp://localhost', (error0, connection) => {
+  if (error0) {
+    console.log('[connect-error]', error0);
+    return;
+  }
+  connection.createChannel((error1, channel) => {
+    if (error1) {
+      console.log('[createChannel-error]', error1);
+      return;
+    }
+    
+    // declare queue name
+    const queue = 'my-queue-name-01';
+    
+    channel.assertQueue(queue, {
+      durable: false,
+    });
+
+    // listen to consume message
+    channel.consume(queue, msg => {
+      console.log('receive message: ', msg.content.toString());
+    }, {
+      noAck: true,
+    });
+  });
+});
+```
+总结：
+  1.消息体会被持久化到rabbitmq server硬盘中，直到被某个客户端receive消费掉；
+  2.当有多个receive客户端同时进行时，有且仅有其中一个客户端能消费掉该条消息；
+  3.某个客户端初始启动时，会去接收消费掉已有的消息(若有多条也一样)；  
+  
+  
+    
+  
+
