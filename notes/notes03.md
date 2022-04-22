@@ -82,7 +82,7 @@ async function fn() {
            }, 5000);
        }); 
     } catch(error) {
-        console.log('正常捕获了错误', error);
+        console.log('正常捕获了错误', error); // 无法捕获异步Error
     }
 }
 async function init() {
