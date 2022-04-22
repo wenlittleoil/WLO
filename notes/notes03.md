@@ -72,7 +72,25 @@ async function init() {
    }
 }
 init(); // Error无法被捕获，直接被抛出到顶层
-```  
+```    
+```
+async function fn() {
+    try {
+       await new Promise((res, rej) => {
+           setTimeout(() => {
+               throw new Error('我的自定义错误');
+           }, 5000);
+       }); 
+    } catch(error) {
+        console.log('正常捕获了错误', error);
+    }
+}
+async function init() {
+    await fn();
+    console.log('因为前面发生了错误，永远不会被执行');
+}
+init();
+``` 
 相反，而以下错误能正常捕获到
 ```
 async function foo() {
