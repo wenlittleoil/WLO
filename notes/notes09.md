@@ -257,6 +257,7 @@ const VideoItem = forwardRef<TOpenState, IVideoItemProps>((props, ref) => {
           onLoadedMetaData={console.log}
         />
       </View>
+      {/* 视频中央的播放图标按钮 */}
       {isCurrent && !playing && (
         <Image
           className={cx(styles['play-icon'], 'n-absolute n-z9')}
@@ -264,6 +265,8 @@ const VideoItem = forwardRef<TOpenState, IVideoItemProps>((props, ref) => {
           onTap={onTap}
         />
       )}
+      {/* 视频内其他悬浮元素 */}
+      <View></View>
     </View>
   )
 });
