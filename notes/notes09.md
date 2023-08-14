@@ -35,6 +35,8 @@ const VideoList = () => {
   const [indexInVirtualPosts, setIndexInVirtualPosts] = useState(0)
   // virtualPosts进行分页加载的页码，标示请求批次
   const [pageNum, setPageNum] = useState(1)
+  // 虚拟列表总数
+  const [total, setTotal] = useState(0)
   //  是否virtualPosts进行分页加载中
   const [loadingMore, setLoadingMore] = useState(false)
   const loadingMoreRef = useRef(false)
@@ -42,6 +44,8 @@ const VideoList = () => {
     setLoadingMore(bol)
     loadingMoreRef.current = bol;
   }
+  // 虚拟列表是否还有更多
+  const notHasMore = virtualPosts?.length >= total;
 
   // 实际渲染列表（真正渲染到页面中的展示动态列表，最多只有三项，前后以null填充）
   const [renderPosts, setRenderPosts] = useState<TPosts>([])
@@ -95,6 +99,7 @@ const VideoList = () => {
     setIndexInVirtualPosts(current)
     // 如果已滑动到最后一个视频，则调接口加载更多视频到虚拟列表
     if (current === virtualPosts.length - 1) {
+      if (notHasMore) return;
       fetchVirtualPosts({
         pageNum,
       })
@@ -117,6 +122,7 @@ const VideoList = () => {
       const latestList = pageNum === 1 ? list : [...virtualPosts, ...list];
       setVirtualPosts(latestList);
       setPageNum(pageNum + 1);
+      setTotal(res?.total || 0);
     } catch(err) {
       toast(err?.message || '获取视频列表失败');
     } finally {
