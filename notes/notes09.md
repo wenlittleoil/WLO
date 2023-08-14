@@ -11,10 +11,14 @@ import {
 import Taro, {
   useLoad,
 } from "@tarojs/taro";
-import { View, Swiper, SwiperItem, } from "@tarojs/components";
 import {
-  IVideoDataItem,
-  getVideoDataList,
+  View,
+  Swiper,
+  SwiperItem,
+} from "@tarojs/components";
+import {
+  IVideoItem,
+  fetchVideoList,
 } from "@/apis/posts"
 import Loading from "./Loading"
 import VideoItem, {
@@ -22,15 +26,14 @@ import VideoItem, {
 } from './VideoItem'
 import styles from "./VideoList.module.scss";
 
-type TPosts = Array<IVideoDataItem | null>
+type TPosts = Array<IVideoItem | null>
 
 const VideoList = () => {
   // 虚拟列表（原始数据，即存储在内存中的总动态列表）
   const [virtualPosts, setVirtualPosts] = useState<TPosts>([]) 
-
   // 当前显示的那条post动态在virtualPosts中的索引位置
   const [indexInVirtualPosts, setIndexInVirtualPosts] = useState(0)
-  // virtualPosts进行分页加载的页码，用于前端标示请求批次，后端暂时没有用到该参数
+  // virtualPosts进行分页加载的页码，标示请求批次
   const [pageNum, setPageNum] = useState(1)
   //  是否virtualPosts进行分页加载中
   const [loadingMore, setLoadingMore] = useState(false)
@@ -98,22 +101,18 @@ const VideoList = () => {
     }
   }
 
-  const fetchVirtualPosts = async (args: { 
-    pageNum: number,
-  }) => {
-    const {
-      pageNum,
-    } = args;
+  const fetchVirtualPosts = async (args: { pageNum: number, }) => {
+    const { pageNum, } = args;
     if (loadingMoreRef.current) return;
     setLoadingState(true)
-    // 调接口获取视频动态列表
     try {
+      // 调接口获取视频动态列表
       const params = {
         pageSize: 10, // 单批次获取智能推荐10条视频
         pageNum, // 请求页码，第几批次
       }
       console.log('[拉取虚拟列表入参]:', params)
-      const res = await getVideoDataList(params);
+      const res = await fetchVideoList(params);
       const list = res?.data || [];
       const latestList = pageNum === 1 ? list : [...virtualPosts, ...list];
       setVirtualPosts(latestList);
