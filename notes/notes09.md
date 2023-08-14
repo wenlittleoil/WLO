@@ -194,6 +194,9 @@ export interface IVideoItemProps {
   isCurrent?: boolean, // 是否为当前屏的视频
 }
 
+// 对视频进行播放或暂停
+export type TOperateType = 'play' | 'pause';
+
 export type TOperateVideoFunc = (
   type: TOperateType, 
 ) => void;
@@ -202,9 +205,6 @@ export type TOpenState = {
   operateVideo: TOperateVideoFunc,
   playing: boolean,
 }
-
-// 对视频进行播放或暂停
-export type TOperateType = 'play' | 'pause';
 
 const VideoItem = forwardRef<TOpenState, IVideoItemProps>((props, ref) => {
   const {
