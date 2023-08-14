@@ -1,5 +1,6 @@
 ## 32.
-抖音视频列表实现原理
+抖音视频列表实现原理  
+VideoList组件：
 ```
 import { 
   FC, 
@@ -12,19 +13,18 @@ import Taro, {
 } from "@tarojs/taro";
 import { View, Swiper, SwiperItem, } from "@tarojs/components";
 import {
-  IPostItem,
-  getRecommendList,
+  IVideoDataItem,
+  getVideoDataList,
 } from "@/apis/posts"
-import { toast } from '@/utils/tools'
 import Loading from "./Loading"
 import VideoItem, {
   TOpenState,
 } from './VideoItem'
-import styles from "./ExploreList.module.scss";
+import styles from "./VideoList.module.scss";
 
-type TPosts = Array<IPostItem | null>
+type TPosts = Array<IVideoDataItem | null>
 
-const ExploreList = () => {
+const VideoList = () => {
   // 虚拟列表（原始数据，即存储在内存中的总动态列表）
   const [virtualPosts, setVirtualPosts] = useState<TPosts>([]) 
 
@@ -113,7 +113,7 @@ const ExploreList = () => {
         pageNum, // 请求页码，第几批次
       }
       console.log('[拉取虚拟列表入参]:', params)
-      const res = await getRecommendList(params);
+      const res = await getVideoDataList(params);
       const list = res?.data || [];
       const latestList = pageNum === 1 ? list : [...virtualPosts, ...list];
       setVirtualPosts(latestList);
@@ -125,42 +125,26 @@ const ExploreList = () => {
     }
   }
 
-  // 点赞或取消点赞后更新状态
-  const onActionSuccess = (actionType, dataItem: IPostItem) => {
-    if (actionType === 'collectCancel') {
-      dispatch(updateIsCollect({
-        dataItem,
-        isCollect: false,
-      }))
-    } else if (actionType === 'collect') {
-      dispatch(updateIsCollect({
-        dataItem,
-        isCollect: true,
-      }))
-    }
-  }
-
   return (
     <View className={styles["post-list-comp_wrap"]}>
       <Swiper 
         indicator-dots={false}
         autoplay={false} 
         vertical={true}
-        className="f-full-screen"
+        className="n-full-screen"
         current={indexInVirtualPosts}
         onChange={onChange}
       >
         {renderPosts.map((item, index) => {
           return (
             <SwiperItem key={index}>
-              {item === null && <View className="f-full-screen" />}
+              {item === null && <View className="n-full-screen" />}
               {item !== null && (
                 <VideoItem 
                   index={index}
                   dataItem={item}
                   ref={instance => videoItemRefs.current[index] = instance}
                   isCurrent={index === indexInVirtualPosts}
-                  onActionSuccess={onActionSuccess}
                 />
               )}
             </SwiperItem>
@@ -173,7 +157,5 @@ const ExploreList = () => {
   )
 }
 
-export default ExploreList
-
-
+export default VideoList;
 ```
