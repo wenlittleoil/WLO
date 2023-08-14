@@ -265,7 +265,7 @@ const VideoItem = forwardRef<TOpenState, IVideoItemProps>((props, ref) => {
           onTap={onTap}
         />
       )}
-      {/* 视频内其他悬浮元素 */}
+      {/* 视频内其他悬浮元素，例如收藏/分享/视频描述等元素 */}
       <View></View>
     </View>
   )
