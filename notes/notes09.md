@@ -1,6 +1,6 @@
 ## 32.
-抖音视频列表实现原理  
-1.VideoList组件：
+抖音视频列表实现原理(以Taro/React/微信小程序为案例)  
+1、VideoList组件：
 ```
 import { 
   FC, 
@@ -158,8 +158,7 @@ const VideoList = () => {
 
 export default VideoList;
 ```
-
-2.VideoItem组件：  
+2、VideoItem组件：  
 ```
 import { 
   useState, 
