@@ -1,6 +1,6 @@
 ## 32.
 抖音视频列表实现原理  
-VideoList组件：
+1.VideoList组件：
 ```
 import { 
   FC, 
@@ -157,4 +157,111 @@ const VideoList = () => {
 }
 
 export default VideoList;
+```
+
+2.VideoItem组件：  
+```
+import { 
+  useState, 
+  forwardRef, 
+  useImperativeHandle,
+  memo,
+  useMemo,
+  ReactNode,
+  useEffect,
+  useRef,
+} from "react";
+import Taro from "@tarojs/taro";
+import { 
+  View,
+  Image,
+  Video,
+} from "@tarojs/components";
+import cx from "classnames";
+import {
+  IVideoItem,
+} from "@/apis/posts"
+import styles from "./VideoItem.module.scss";
+
+export interface IVideoItemProps {
+  index: number, // 视频项在虚拟列表中的索引位置
+  dataItem: IVideoItem, // 视频项
+  isCurrent?: boolean, // 是否为当前屏的视频
+}
+
+export type TOperateVideoFunc = (
+  type: TOperateType, 
+) => void;
+
+export type TOpenState = {
+  operateVideo: TOperateVideoFunc,
+  playing: boolean,
+}
+
+// 对视频进行播放或暂停
+export type TOperateType = 'play' | 'pause';
+
+const VideoItem = forwardRef<TOpenState, IVideoItemProps>((props, ref) => {
+  const {
+    index,
+    dataItem,
+    isCurrent = true,
+  } = props
+
+  const [playing, setPlaying] = useState(false)
+  const operateVideo: TOperateVideoFunc = type => {
+    // 对指定索引位置的那条视频进行播放或暂停
+    const videoContext = Taro.createVideoContext(`post-vid-${index}`);
+    if (type === 'play') {
+      setPlaying(true);
+      videoContext.play();  
+    } else if (type === 'pause') {
+      setPlaying(false);
+      videoContext.pause();
+    }
+  }
+
+  const onTap = () => {
+    if (playing) operateVideo('pause');
+    else operateVideo('play');
+  }
+
+  useImperativeHandle(ref, () => {
+    return {
+      operateVideo,
+      playing,
+    }
+  }, [playing])
+
+  return (
+    <View className="n-relative">
+      <View 
+        className="video-wrapper" 
+        onTap={onTap}
+      >
+        <Video 
+          className="n-full-screen"
+          id={`post-vid-${index}`}
+          src={dataItem?.video?.url}
+          autoplay={false}
+          loop={true}
+          show-fullscreen-btn={false}
+          show-center-play-btn={false}
+          show-play-btn={false}
+          objectFit="cover"
+          onLoadedMetaData={console.log}
+        />
+      </View>
+      {isCurrent && !playing && (
+        <Image
+          className={cx(styles['play-icon'], 'n-absolute n-z9')}
+          src={`${STATIC_HOST}/icon_play.png`}
+          onTap={onTap}
+        />
+      )}
+    </View>
+  )
+});
+
+export default memo(VideoItem)
 ```
