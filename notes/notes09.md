@@ -76,14 +76,14 @@ const VideoList = () => {
     const nextIndex = indexInVirtualPosts + 1;
     if (prevIndex >= 0) {
       const prevVideoItem = videoItemRefs?.current[prevIndex];
-      prevVideoItem?.playing && prevVideoItem?.operateVideo('pause');
+      prevVideoItem && prevVideoItem?.playing && prevVideoItem?.operateVideo('pause');
     }
     if (nextIndex < virtualPosts.length) {
       const nextVideoItem = videoItemRefs?.current[nextIndex];
-      nextVideoItem?.playing && nextVideoItem?.operateVideo('pause');
+      nextVideoItem && nextVideoItem?.playing && nextVideoItem?.operateVideo('pause');
     }
     const currentVideoItem = videoItemRefs?.current[indexInVirtualPosts];
-    !currentVideoItem?.playing && currentVideoItem?.operateVideo('play');
+    currentVideoItem && !currentVideoItem?.playing && currentVideoItem?.operateVideo('play');
   }, [renderPosts])
 
   useLoad(() => {
@@ -143,7 +143,12 @@ const VideoList = () => {
         {renderPosts.map((item, index) => {
           return (
             <SwiperItem key={index}>
-              {item === null && <View className="n-full-screen" />}
+              {item === null && (
+                <View
+                  className="n-full-screen"
+                  ref={() => videoItemRefs.current[index] = null}
+                />
+              )}
               {item !== null && (
                 <VideoItem 
                   index={index}
