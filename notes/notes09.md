@@ -69,9 +69,8 @@ const VideoList = () => {
     setRenderPosts(newRenderList)
   }, [indexInVirtualPosts, virtualPosts])
 
-  useEffect(() => {
+  useEffectAllDepsChange(() => {
     // 新的渲染完成后，将之前的视频暂停，然后播放新切换后的那条视频，即当前indexInVirtualPosts视频
-    if (!renderPosts.length) return;
     const prevIndex = indexInVirtualPosts - 1;
     const nextIndex = indexInVirtualPosts + 1;
     if (prevIndex >= 0) {
@@ -84,6 +83,17 @@ const VideoList = () => {
     }
     const currentVideoItem = videoItemRefs?.current[indexInVirtualPosts];
     currentVideoItem && !currentVideoItem?.playing && currentVideoItem?.operateVideo('play');
+  }, [indexInVirtualPosts, renderPosts])
+
+  // 列表renderPosts完成初次渲染后执行一次，默认播放第一个视频，仅执行一次
+  const initial = useRef(true)
+  useEffect(() => {
+    if (!renderPosts.length) return;
+    if (initial.current) {
+      initial.current = false;
+      const currentVideoItem = videoItemRefs?.current[indexInVirtualPosts];
+      currentVideoItem?.operateVideo('play');
+    }
   }, [renderPosts])
 
   useLoad(() => {
