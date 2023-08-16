@@ -244,7 +244,7 @@ const VideoItem = forwardRef<TOpenState, IVideoItemProps>((props, ref) => {
   }, [playing])
 
   return (
-    <View className="n-relative">
+    <View className="n-rel">
       <View 
         className="video-wrapper" 
         onTap={onTap}
@@ -265,7 +265,7 @@ const VideoItem = forwardRef<TOpenState, IVideoItemProps>((props, ref) => {
       {/* 视频中央的播放图标按钮 */}
       {isCurrent && !playing && (
         <Image
-          className={cx(styles['play-icon'], 'n-absolute n-z9')}
+          className={cx(styles['play-icon'], 'n-abs n-z9')}
           src={`${STATIC_HOST}/icon_play.png`}
           onTap={onTap}
         />
