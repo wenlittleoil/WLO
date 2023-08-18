@@ -85,7 +85,7 @@ const VideoList = () => {
     currentVideoItem && !currentVideoItem?.playing && currentVideoItem?.operateVideo('play');
   }, [indexInVirtualPosts, renderPosts])
 
-  // 列表renderPosts完成初次渲染后执行一次，默认播放第一个视频，仅执行一次
+  // 列表renderPosts完成初次渲染后执行一次，默认播放第一个视频(此时indexInVirtualPosts为0)，仅执行一次
   const initial = useRef(true)
   useEffect(() => {
     if (!renderPosts.length) return;
