@@ -143,6 +143,7 @@ const InfiniteLoadList = forwardRef(<T, R = undefined>(
     }
   }
 
+  // 注意！必须给滚动容器ScrollView设置定高，例如n-full-screen全屏高度，这个根据实际需求来定
   return (
     <ScrollView
       className={classnames('wrapper', className)}
@@ -232,11 +233,13 @@ const Index = () => {
       className='n-full-screen n-box-bd'
       request={request}
       ref={infiniteLoadListRef}
+      // 如何渲染列表项
       renderItem={(item) => (
         <View style={{ height: '100px' }} key={item?.id}>
           {item?.id}
         </View>
       )}
+      // loadMoreTrigger='click'
     />
   );
 }
@@ -283,6 +286,7 @@ const Index = () => {
     pageSize,
     searchWord,
   }) => {
+    // 除了分页参数pageNum/pageSize外，可选的自定义业务参数searchWord透传出来以供调用接口
     const params = {
       page_number: pageNum,
       page_size: pageSize,
