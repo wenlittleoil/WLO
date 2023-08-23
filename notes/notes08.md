@@ -1,5 +1,5 @@
 ## 31.
-无限加载列表原理实现（以Taro/React/h5为案例）  
+无限加载列表原理实现（以Taro/React/h5/微信小程序为案例）  
 1、封装InfiniteLoadList.tsx组件
 ```
 import {
