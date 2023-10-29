@@ -45,5 +45,26 @@ export default function useEffectAllDepsChange(fn, deps) {
 微信小程序封装request方法
 ```
 ```
+## 37.
+android studio和idea项目工程mac快捷操作：  
+1.在当前文件内搜索关键词
+```
+command + f
+```
+2.在整个项目工程内搜索关键词
+```
+command + shift + f
+```
+3.在整个项目工程内查找文件
+```
+command + o
+```
+4.在当前文件内搜索和替换关键词
+```
+command + r
+```
+5.在整个项目工程内搜索和替换关键词
+```
+command + shift + r
+```
 
-  
