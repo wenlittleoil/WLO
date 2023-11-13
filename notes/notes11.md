@@ -1,7 +1,6 @@
 ## 38.
 简单封装pc和移动浏览器h5手势操作库gesture
 ```
-
 type TGestureType = 'left' | 'right' | 'up' | 'down';
 
 type TGestureListener = () => void;
@@ -84,15 +83,23 @@ const gesture: IGesture = {
   },
   listeners: [],
   on: (type, listener) => {
-    gesture.listeners.push({
-      type,
-      listener
-    });
+    const index = gesture.listeners.findIndex(item => 
+      item.type === type && item.listener === listener
+    );
+    if (index === -1) {
+      gesture.listeners.push({
+        type,
+        listener
+      });
+    }
   },
   off: (type, listener) => {
-    gesture.listeners = gesture.listeners.filter(item => 
-      !(item.type === type && item.listener === listener)
+    const index = gesture.listeners.findIndex(item => 
+      item.type === type && item.listener === listener
     );
+    if (index > -1) {
+      gesture.listeners.splice(index, 1);
+    }
   },
 }
 
