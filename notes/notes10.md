@@ -37,10 +37,6 @@ export default function useEffectAllDepsChange(fn, deps) {
   }, [fn, prevDeps, deps]);
 }
 ```
-## 35.
-大文件上传原理
-```
-```
 ## 36.
 微信小程序封装request方法
 ```
