@@ -115,7 +115,7 @@ init(); // 这次能正常地捕获到错误异常
 ## 18. 
 ```
 /**
- * build2Tree 方法
+ * build2Tree 方法一
  * 将扁平化的数组nodes根据节点项id, pid 和 children 将一个个节点构建成一棵或者多棵树
  * 另外还支持对节点项对象添加额外的属性
  * @param nodes 节点对象数组
@@ -160,6 +160,29 @@ function build2Tree(nodes = [], config = {}) {
 const sourcePlatList = [{"id":"1","name":"深圳**科技有限公司","departmentId":"1","parentId":0,"count":27,"sortOrder":100000000},{"id":"5","name":"人力","departmentId":"5","parentId":1,"count":1,"sortOrder":99997000},{"id":"6","name":"产品","departmentId":"6","parentId":1,"count":4,"sortOrder":99996000},{"id":"7","name":"UI","departmentId":"7","parentId":6,"count":1,"sortOrder":100000000},{"id":"8","name":"PM","departmentId":"8","parentId":6,"count":3,"sortOrder":99999000},{"id":"9","name":"平面","departmentId":"9","parentId":7,"count":0},{"id":"10","name":"视觉","departmentId":"10","parentId":9,"count":0}];
 const resultTreeList = build2Tree(sourcePlatList, { id: 'id', pid: 'parentId', mapping: { key: 'id', title: 'name'}});
 console.log(resultTreeList);
+```
+```
+/**
+ * build2Tree 方法二
+ */
+function build2Tree(flatNodes = []) {
+  // 先深拷贝原节点列表，避免影响到原节点列表
+  const list = JSON.parse(JSON.stringify(flatNodes));
+
+  // 对每个节点追加其子节点列表（节点间会通过引用关联在一起）
+  list.forEach(item => {
+    const childNodes = list.filter(node => node.parentId === item.id);
+    if (!item.children) item.children = [];
+    if (childNodes.length > 0) {
+        childNodes.forEach(childNode => {
+            item.children.push(childNode);
+        });
+    } 
+  });
+
+  // 只返回一级节点列表（即不存在父节点的那些节点为一级节点）
+  return list.filter(item => list.every(i => i.id !== item.parentId));
+}
 ```
 
 ## 19. 
