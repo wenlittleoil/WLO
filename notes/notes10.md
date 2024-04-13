@@ -183,7 +183,7 @@ export const requestBDE = createRequest({
 
 // 使用案例（业务请求）
 export async function fetchProductList(reqArgs) {
-  return requestBDE<Res>(
+  return requestBDE<Res<IProducts>>(
     {
       url: `/product/list`,
       method: "POST",
