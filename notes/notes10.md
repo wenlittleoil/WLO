@@ -38,7 +38,8 @@ export default function useEffectAllDepsChange(fn, deps) {
 }
 ```
 ## 36.
-封装request方法(微信小程序/h5平台)
+封装request方法(微信小程序/h5平台):  
+一、Taro实现
 ```
 import Taro, {
   hideLoading,
@@ -69,10 +70,15 @@ export const getGlobalTokenInfo = (() => {
     if (!tokenInfo) {
       tokenInfo = new Promise(async (resolve, reject) => {
         try {
+          // wx.login
           const wxLoginRes = await Taro.login();
-          const res = await loginBde({
-            jsCode: wxLoginRes.code,
-            appCode: 'graff_sxp',
+          // business login
+          const res = await requestBDE({
+            url: `/wx/login`,
+            method: "POST",
+            data: {
+              wxCode: wxLoginRes.code
+            },
             needToken: false, // 必传，登录无需token，若不传会导致死循环
           });
           resolve(res?.data as TokenInfo);
@@ -169,17 +175,19 @@ export const createRequest = (baseOptions: TReqOption) => async <T>(options: TRe
   return res;
 }
 
+// 创建公共request方法
 export const requestBDE = createRequest({
   baseUrl: BDE_API_URL,
   type: TYPE.BDE,
 })
 
-export async function userBehaviorTrace(reqArgs: IUserBehaviorTraceReq) {
+// 使用案例（业务请求）
+export async function fetchProductList(reqArgs) {
   return requestBDE<Res>(
     {
-      url: `/trace`,
+      url: `/product/list`,
       method: "POST",
-      data: args,
+      data: reqArgs,
       autoLoading: false,
       needLog: false,
       autoErrTip: false,
