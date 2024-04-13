@@ -47,7 +47,6 @@ import Taro, {
   showLoading,
 } from "@tarojs/taro";
 import { toast } from '@/utils/tools'
-import { loginBde } from '@/apis/auth-bde'
 
 export type TReqOption = {
   autoLoading?: boolean;
