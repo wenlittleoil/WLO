@@ -173,6 +173,19 @@ export const requestBDE = createRequest({
   type: TYPE.BDE,
 })
 
+export async function userBehaviorTrace(reqArgs: IUserBehaviorTraceReq) {
+  return requestBDE<Res>(
+    {
+      url: `/trace`,
+      method: "POST",
+      data: args,
+      autoLoading: false,
+      needLog: false,
+      autoErrTip: false,
+    }
+  );
+}
+
 ```
 ## 37.
 android studio和idea项目工程mac快捷操作：  
