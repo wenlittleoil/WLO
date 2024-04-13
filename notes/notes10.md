@@ -38,8 +38,141 @@ export default function useEffectAllDepsChange(fn, deps) {
 }
 ```
 ## 36.
-微信小程序封装request方法
+封装request方法(微信小程序/h5平台)
 ```
+import Taro, {
+  hideLoading,
+  request as TaroRequest,
+  showLoading,
+} from "@tarojs/taro";
+import { toast } from '@/utils/tools'
+import { loginBde } from '@/apis/auth-bde'
+
+export type TReqOption = {
+  autoLoading?: boolean;
+  autoErrTip?: boolean;
+  baseUrl?: string;
+  needToken?: boolean;
+  needLog?: boolean;
+} & any;
+
+export const TYPE = {
+  BDE: 'BDE',
+  SSC: 'SSC',
+}
+
+// 仅用于微信小程序静默登录
+export type TokenInfo = { userId: number, accessToken: string };
+export const getGlobalTokenInfo = (() => {
+  let tokenInfo: Promise<TokenInfo>;
+  return async () => {
+    if (!tokenInfo) {
+      tokenInfo = new Promise(async (resolve, reject) => {
+        try {
+          const wxLoginRes = await Taro.login();
+          const res = await loginBde({
+            jsCode: wxLoginRes.code,
+            appCode: 'graff_sxp',
+          });
+          resolve(res?.data as TokenInfo);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    }
+    return tokenInfo;
+  }
+})();
+
+export async function request<T>(
+  options: TReqOption,
+): Promise<T> {
+  const {
+    autoLoading = true,
+    autoErrTip = true, 
+    baseUrl,
+    type,
+    needToken = true,
+    needLog = true,
+  } = options;
+  const newOptions = {
+    ...options,
+    url: `${baseUrl}${options?.url}`,
+    header: {},
+    timeout: 25000, // 25s超时
+  }
+  if (type === TYPE.BDE) {
+    let token = '';
+    if (needToken) {
+      // token = Taro.getStorageSync('access_token'); // 常规登录
+      token = (await getGlobalTokenInfo()).accessToken; // 微信小程序静默登录
+    }
+    newOptions.header = {
+      ...newOptions.header,
+      Authorization: `${token}`,
+    }
+  } else if (type === TYPE.SSC) {
+    newOptions.header = {
+      ...newOptions.header,
+    }
+  }
+
+  const errTip = (message) => {
+    toast(message || '请求失败');
+  }
+
+  try {
+    if (autoLoading) {
+      showLoading();
+    }
+    const response = await TaroRequest(newOptions);
+    needLog && console.log('[response]', response);
+    if (autoLoading) {
+      hideLoading();
+    }
+    const { statusCode, data, } = response;
+    const success = +data?.code === 0;
+    if (!success) {
+      if (autoErrTip) {
+        const tip = data?.errMessage || data?.msg || data?.message;
+        errTip(tip);
+      }
+      // if (
+      //   type === TYPE.BDE && 
+      //   data?.errCode === 40000
+      // ) {
+      //   // 登录态失效，重新获取code进行登录
+      // }
+      return Promise.reject(data);
+    }
+    return data;
+  } catch (err) {
+    console.log(`[response error]:`, err);
+    if (autoLoading) {
+      hideLoading();
+    }
+    if (autoErrTip) {
+      const tip = err?.errMessage || err?.msg || err?.message;
+      errTip(tip);
+    }
+    return Promise.reject(err);
+  }
+}
+
+export const createRequest = (baseOptions: TReqOption) => async <T>(options: TReqOption) => {
+  const _options = {
+    ...baseOptions,
+    ...options,
+  }
+  const res = await request<T>(_options);
+  return res;
+}
+
+export const requestBDE = createRequest({
+  baseUrl: BDE_API_URL,
+  type: TYPE.BDE,
+})
+
 ```
 ## 37.
 android studio和idea项目工程mac快捷操作：  
