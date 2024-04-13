@@ -73,6 +73,7 @@ export const getGlobalTokenInfo = (() => {
           const res = await loginBde({
             jsCode: wxLoginRes.code,
             appCode: 'graff_sxp',
+            needToken: false, // 必传，登录无需token，若不传会导致死循环
           });
           resolve(res?.data as TokenInfo);
         } catch (error) {
