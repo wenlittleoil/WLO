@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { useHistory } from 'react-router'
 // import { useHistory } from 'umi'
 
+// key must be uniq in global history state object
 export default function useHistoryState<T>(key: string, initialValue: T): [T, (t: T) => void] {
   const history = useHistory()
   const [rawState, rawSetState] = useState<T>(() => {
