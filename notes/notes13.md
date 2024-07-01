@@ -161,4 +161,99 @@ export const debounce = (fn, delay) => {
 };
 ```
 
+## 43.
+echarts世界地图绘制（不需要引入百度地图导航功能）
+```
+import * as echarts from 'echarts'
+import worldGeoJson from './world.json' // 标准地理地图数据
+
+echarts.registerMap('world', worldGeoJson as any)
+const chart = echarts.init(dom)
+const options: echarts.EChartsOption = {
+  series: [
+    {
+        // 散点图(气泡图)
+        type: 'scatter',
+        coordinateSystem: 'geo',
+        zlevel: 1,
+        symbol: 'circle',
+        // 自定义气泡大小
+        symbolSize: function (val) {
+          return 4 + val[2] / 100
+        },
+        tooltip: {
+          show: true,
+          borderWidth: 0,
+          formatter: (params) => {
+            const { data } = params
+            const { name, value } = data
+            return `<div>${name}: ${value[2]}</div>`
+          }
+        },
+        // 气泡样式
+        itemStyle: {
+          borderColor: '#1890FF',
+          color: '#1890FF',
+          opacity: 0.6
+        },
+        // 序列数据
+        data: [
+          {
+            name: "China",
+            value: [116.20, 39.56, 1272], // [longitude, latitude, total]
+          },
+          {
+            name: "America",
+            value: [-122.8950075, 47.0451022, 649]
+          },
+        ],
+    }
+  ],
+  // visualMap: {
+  //   //图例值控制
+  //   min: 10,
+  //   max: 50,
+  //   show: true,
+  //   calculable: true,
+  //   color: ['#ff9500'],
+  //   textStyle: {
+  //     color: '#fff'
+  //   }
+  // },
+  backgroundColor: '#fff',
+  // 地图及样式基础配置
+  geo: {
+    map: 'world',
+    label: {
+      show: false
+    },
+    emphasis: {
+      itemStyle: {
+        areaColor: '#2a333d66'
+      },
+      label: {
+        show: false,
+        color: '#fff'
+      }
+    },
+    roam: 'move', // 允许鼠标横移漫游，不允许鼠标缩放
+    zoom: 1, // 当前地图缩放值
+    layoutCenter: ['50%', '50%'], //地图位置
+    layoutSize: '180%',
+    itemStyle: {
+      areaColor: '#edf3f3',
+      borderColor: '#9d9f9f'
+    },
+    tooltip: {
+      show: false
+    }
+  },
+  tooltip: {
+    trigger: 'item'
+  }
+}
+chart.setOption(options, true)
+```
+
+
 
