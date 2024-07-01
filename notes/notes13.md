@@ -165,10 +165,10 @@ export const debounce = (fn, delay) => {
 echarts世界地图绘制（不需要引入百度地图导航功能）
 ```
 import * as echarts from 'echarts'
-import worldGeoJson from './world.json' // 标准地理地图数据
+import worldGeoJson from './world.json' // 标准地理地图数据，参考echarts文档相关说明
 
 echarts.registerMap('world', worldGeoJson as any)
-const chart = echarts.init(dom)
+const chart = echarts.init(dom) // 地图挂载的div节点
 const options: echarts.EChartsOption = {
   series: [
     {
