@@ -255,5 +255,119 @@ const options: echarts.EChartsOption = {
 chart.setOption(options, true)
 ```
 
+## 44.
+基于antd Upload封装的上传图片组件
+```
+import React, { useEffect, useState } from "react";
+import { PlusOutlined } from "@ant-design/icons";
+import { Image, Upload } from "antd";
+import type { GetProp, UploadFile, UploadProps } from "antd";
+import { UploadFileStatus } from "antd/lib/upload/interface";
+import uniqueId from "lodash/uniqueId";
+
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
+
+const getBase64 = (file: FileType): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
+
+interface IProps {
+  value?: string[]; // 图片url列表
+  onChange?: (value?: string[]) => void;
+  limitFileList?: number; // 限制最多上传几张图片，默认只能上传单张
+}
+
+const UploadPictures: React.FC<IProps> = (props) => {
+  const { value, onChange = () => {}, limitFileList = 1 } = props;
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+
+  useEffect(() => {
+    const list = (value || []).map((item) => ({
+      uid: uniqueId("reveal_"),
+      name: "image",
+      status: "done" as UploadFileStatus,
+      url: item,
+    }));
+    setFileList(list);
+  }, [value]);
+
+  const handlePreview = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as FileType);
+    }
+
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+  };
+
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+    console.log("handleChange", newFileList);
+    // 上传成功后才需要更新fileList，对于失败的上传直接跳过
+    const list = newFileList
+      .filter((item) => item.status !== "error")
+      .filter(
+        (item) => !(item.status === "done" && !item.url && !item.response?.data)
+      );
+    // 对于成功的上传，取出服务端返回的图片链接url
+    const _list = list.map((item) => {
+      if (item.status === "done" && item.response?.data && !item.url) {
+        return {
+          ...item,
+          url: item.response?.data,
+        };
+      }
+      return item;
+    });
+    // 更新组件内部状态fileList
+    setFileList(_list);
+    // 所有上传完毕后，才更新外部状态value
+    if (_list.every((item) => !!item.url)) {
+      onChange(_list.map((item) => item.url));
+    }
+  };
+
+  const uploadButton = (
+    <button style={{ border: 0, background: "none" }} type="button">
+      <PlusOutlined />
+      <div style={{ marginTop: 8 }}>上传</div>
+    </button>
+  );
+  return (
+    <>
+      <Upload
+        action={"/api/upload"}
+        name="file"
+        headers={{}}
+        listType="picture-card"
+        fileList={fileList}
+        onPreview={handlePreview}
+        onChange={handleChange}
+      >
+        {fileList.length >= limitFileList ? null : uploadButton}
+      </Upload>
+      {previewImage && (
+        <Image
+          wrapperStyle={{ display: "none" }}
+          preview={{
+            visible: previewOpen,
+            onVisibleChange: (visible) => setPreviewOpen(visible),
+            afterOpenChange: (visible) => !visible && setPreviewImage(""),
+          }}
+          src={previewImage}
+        />
+      )}
+    </>
+  );
+};
+
+export default UploadPictures;
+```
+
 
 
