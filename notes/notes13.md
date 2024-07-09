@@ -275,14 +275,14 @@ const getBase64 = (file: FileType): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
-interface IProps {
+interface IProps extends Omit<UploadProps, 'value' | 'onChange'> {
   value?: string[]; // 图片url列表
   onChange?: (value?: string[]) => void;
   limitFileList?: number; // 限制最多上传几张图片，默认只能上传单张
 }
 
 const UploadPictures: React.FC<IProps> = (props) => {
-  const { value, onChange = () => {}, limitFileList = 1 } = props;
+  const { value, onChange = () => {}, limitFileList = 1, ...restUploadProps } = props;
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -290,7 +290,7 @@ const UploadPictures: React.FC<IProps> = (props) => {
   useEffect(() => {
     const list = (value || []).map((item) => ({
       uid: uniqueId("reveal_"),
-      name: "image",
+      name: "Image",
       status: "done" as UploadFileStatus,
       url: item,
     }));
@@ -341,6 +341,7 @@ const UploadPictures: React.FC<IProps> = (props) => {
   return (
     <>
       <Upload
+        accept="image/*"
         action={"/api/upload"}
         name="file"
         headers={{}}
@@ -348,6 +349,7 @@ const UploadPictures: React.FC<IProps> = (props) => {
         fileList={fileList}
         onPreview={handlePreview}
         onChange={handleChange}
+        {...restUploadProps}
       >
         {fileList.length >= limitFileList ? null : uploadButton}
       </Upload>
