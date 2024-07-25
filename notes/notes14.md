@@ -11,3 +11,7 @@ const list = getSkuList([[2, 4], ["a", "b"], ["A", "B", "C"]]);
 console.log(list);
 ```
 
+## 46.
+基于antd Upload封装的上传视频组件
+```
+```
