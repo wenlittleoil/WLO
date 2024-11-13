@@ -55,4 +55,27 @@ console.log(targetArr);
     });
   }
 ```
+## 49.
+常用js正则表达式合集
+```
+const textInputRules = [
+  { pattern: /(^\S)((.)*\S)?(\S*$)/, message: "前后不能出现空格" },
+];
+
+const onlyWordNumRules = [
+  { pattern: /^[A-Za-z0-9]+$/, message: "只支持输入字母、数字" },
+];
+
+const onlyNumRules = [{ pattern: /^[0-9]+$/, message: "只支持输入数字" }];
+
+const emailRegRules = [{
+  pattern: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  message: "请输入正确的邮箱格式"
+}];
+
+const onlyChineseRules = [{ pattern: /^[u4e00-u9fa5]+$/, message: "只支持输入中文" }];
+
+const excludeChineseRules = [{ pattern: /^[^\u4e00-\u9fa5]+$/, message: "不支持输入中文" }];
+```
+
 
