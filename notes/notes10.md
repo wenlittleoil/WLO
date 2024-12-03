@@ -3,6 +3,9 @@ macos检索磁盘目录大小占用
 ```
 sudo du -d 1 -h | sort -h
 ```
+可删文件：
+1. `~/Library/Containers`下的微信com.tencent.xinWeChat/企微com.tencent.WeWorkMac文件；
+2. `~/Caches`下特定应用的缓存文件；
 
 ## 34.
 每个依赖同时发生变化时才会执行useEffectAllDepsChange，与其中一个依赖发生变化就会执行的useEffect不同。
