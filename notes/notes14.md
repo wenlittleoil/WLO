@@ -77,5 +77,8 @@ const onlyChineseRules = [{ pattern: /^[u4e00-u9fa5]+$/, message: "只支持输�
 
 const excludeChineseRules = [{ pattern: /^[^\u4e00-\u9fa5]+$/, message: "不支持输入中文" }];
 ```
-
+## 50.
+微信小程序Taro框架版本-两种不同轮播图效果的实现
+```
+```
 
