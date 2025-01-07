@@ -83,6 +83,33 @@ const excludeChineseRules = [{ pattern: /^[^\u4e00-\u9fa5]+$/, message: "不支�
 // 1.左右滑动轮播
 
 // 2.点击切换轮播
+      /* 状态逻辑 */
+      const [interactiveImages, setInteractiveImages] = useState<string[]>([]); // 轮播图片列表
+      const [index, setIndex] = useState(0); // 当前处在轮播图片列表的第几帧
+
+      // 微信小程序动画实例
+      const animationInstance = useMemo(() => {
+        return Taro.createAnimation({
+          duration: 1000,
+          timingFunction: 'ease',
+        });
+      }, []);
+      // 微信小程序动画列表
+      const [animations, setAnimations] = useState<any[]>([]);
+      // 初始动画状态
+      useEffect(() => {
+        if (!interactiveImages?.length) return;
+        setAnimations(interactiveImages.map((url, ind) => {
+          if (ind === 0) {
+            // 第一帧图初始呈现
+            animationInstance.opacity(1).step();
+            return animationInstance.export();
+          }
+          return {}
+        }));
+      }, [interactiveImages]);
+
+      /* jsx模板 */
       <View className='interpic-container'>
         {interactiveImages?.map((picUrl, ind) => {
           return (
@@ -90,7 +117,7 @@ const excludeChineseRules = [{ pattern: /^[^\u4e00-\u9fa5]+$/, message: "不支�
               key={ind}
               onClick={() => {
                 if (index === interactiveImages?.length - 1) {
-                  // 当前处于最后一帧，则重新回到第一帧
+                  // 当前处于最后一帧图，则重新回到第一帧图
                   setIndex(0)
     
                   const _animations = [...animations];
@@ -104,7 +131,7 @@ const excludeChineseRules = [{ pattern: /^[^\u4e00-\u9fa5]+$/, message: "不支�
     
                   setAnimations(_animations);
                 } else {
-                  // 正常切换到下一帧
+                  // 正常切换到下一帧图
                   setIndex(index + 1);
   
                   const _animations = [...animations];
@@ -120,7 +147,7 @@ const excludeChineseRules = [{ pattern: /^[^\u4e00-\u9fa5]+$/, message: "不支�
                 }
               }}
               className={'interpic-item'}
-              animation={animations[ind]} // 绑定动画效果
+              animation={animations[ind]} // 给每一帧图片分别绑定自己的动画效果
             >
               <Image 
                 className="pic"
@@ -132,5 +159,22 @@ const excludeChineseRules = [{ pattern: /^[^\u4e00-\u9fa5]+$/, message: "不支�
           )
         })}
       </View>
+
+      /* scss样式 */
+      .interpic-container {
+        width: 610px;
+        height: 610px;
+        position: relative;
+        .interpic-item {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          opacity: 0;
+          .pic {
+            width: 100%;
+            height: 100%;
+          }
+        }
+      }
 ```
 
