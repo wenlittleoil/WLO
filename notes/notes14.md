@@ -80,9 +80,9 @@ const excludeChineseRules = [{ pattern: /^[^\u4e00-\u9fa5]+$/, message: "不支�
 ## 50.
 微信小程序两种不同轮播图效果的实现（使用Taro框架）
 ```
-// 1.左右滑动轮播
+// 一、左右滑动轮播
 
-// 2.点击切换轮播
+// 二、点击切换轮播
       /* 状态逻辑 */
       const [interactiveImages, setInteractiveImages] = useState<string[]>([]); // 轮播图片列表
       const [index, setIndex] = useState(0); // 当前处在轮播图片列表的第几帧
@@ -110,7 +110,7 @@ const excludeChineseRules = [{ pattern: /^[^\u4e00-\u9fa5]+$/, message: "不支�
       }, [interactiveImages]);
 
       /* jsx模板 */
-      <View className='interpic-container'>
+      <View className="interpic-container">
         {interactiveImages?.map((picUrl, ind) => {
           return (
             <View 
@@ -146,7 +146,7 @@ const excludeChineseRules = [{ pattern: /^[^\u4e00-\u9fa5]+$/, message: "不支�
                   setAnimations(_animations);
                 }
               }}
-              className={'interpic-item'}
+              className="interpic-item"
               animation={animations[ind]} // 给每一帧图片分别绑定自己的动画效果
             >
               <Image 
@@ -160,7 +160,7 @@ const excludeChineseRules = [{ pattern: /^[^\u4e00-\u9fa5]+$/, message: "不支�
         })}
       </View>
 
-      /* scss样式 */
+      /* scss样式（750px设计稿） */
       .interpic-container {
         width: 610px;
         height: 610px;
@@ -169,7 +169,7 @@ const excludeChineseRules = [{ pattern: /^[^\u4e00-\u9fa5]+$/, message: "不支�
           width: 100%;
           height: 100%;
           position: absolute;
-          opacity: 0;
+          opacity: 0; // 默认隐藏
           .pic {
             width: 100%;
             height: 100%;
