@@ -80,5 +80,57 @@ const excludeChineseRules = [{ pattern: /^[^\u4e00-\u9fa5]+$/, message: "不支�
 ## 50.
 微信小程序两种不同轮播图效果的实现（使用Taro框架）
 ```
+// 1.左右滑动轮播
+
+// 2.点击切换轮播
+      <View className='interpic-container'>
+        {interactiveImages?.map((picUrl, ind) => {
+          return (
+            <View 
+              key={ind}
+              onClick={() => {
+                if (index === interactiveImages?.length - 1) {
+                  // 当前处于最后一帧，则重新回到第一帧
+                  setIndex(0)
+    
+                  const _animations = [...animations];
+    
+                  // 当前帧消失
+                  animationInstance.opacity(0).step();
+                  _animations[index] = animationInstance.export();
+                  // 重新回到第一帧
+                  animationInstance.opacity(1).step();
+                  _animations[0] = animationInstance.export();
+    
+                  setAnimations(_animations);
+                } else {
+                  // 正常切换到下一帧
+                  setIndex(index + 1);
+  
+                  const _animations = [...animations];
+  
+                  // 当前帧动画消失
+                  animationInstance.opacity(0).step();
+                  _animations[index] = animationInstance.export();
+                  // 下一帧动画出现
+                  animationInstance.opacity(1).step();
+                  _animations[index + 1] = animationInstance.export();
+  
+                  setAnimations(_animations);
+                }
+              }}
+              className={'interpic-item'}
+              animation={animations[ind]} // 绑定动画效果
+            >
+              <Image 
+                className="pic"
+                src={picUrl}
+                mode="aspectFill"
+                lazyLoad
+              />
+            </View>
+          )
+        })}
+      </View>
 ```
 
