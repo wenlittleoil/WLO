@@ -109,7 +109,7 @@ export interface ISwiperItem {
   type: 'image' | 'video',
   url: string,
   cover?: string,
-  dataItem?: any,
+  dataItem?: any, // 每个轮播项所关联的业务数据项（一般由服务端返回，可用于自定义业务）
 }
 
 interface IProps {
