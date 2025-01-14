@@ -106,7 +106,7 @@ import useIntersectionObserver from '@/hook/useIntersectionObserver'
 import './CreativeColumns.scss'
 
 export interface ISwiperItem {
-  type: 'image' | 'video',
+  type: 'image' | 'video', // 轮播图片或视频
   url: string,
   cover?: string,
   dataItem?: any, // 每个轮播项所关联的业务数据项（一般由服务端返回，可用于自定义业务）
