@@ -102,7 +102,6 @@ import {
 import classNames from 'classnames'
 import { staticHost } from '@/config'
 import CustomSwiperIndicator from '@/components/CustomSwiperIndicator'
-import useIntersectionObserver from '@/hook/useIntersectionObserver'
 import './CreativeColumns.scss'
 
 export interface ISwiperItem {
@@ -195,20 +194,30 @@ const CreativeColumns:FC<IProps> = (props) => {
     }
   }, [swiperList, inViewport]);
 
-  useIntersectionObserver({
-    type: "relativeToViewport",
-    observeTarget: '#' + observerEleId,
-    observeCallback: (res) => {
-      console.log("observe-callback", res?.intersectionRatio);
-      if (res.intersectionRatio > 0) {
-        // 轮播区进入视口
-        setInViewport(true);
-      } else {
-        // 轮播区离开视口
-        setInViewport(false);
+  useEffect(() => {
+    Taro.nextTick(() => {
+      const observeTarget = '#' + observerEleId;
+      const observeCallback = (res) => {
+        console.log("observe-callback", res?.intersectionRatio);
+        if (res.intersectionRatio > 0) {
+          // 轮播区进入视口
+          setInViewport(true);
+        } else {
+          // 轮播区离开视口
+          setInViewport(false);
+        }
       }
-    },
-  });
+      const observer = Taro.createIntersectionObserver(
+        Taro.getCurrentInstance().page,
+        // createOptions
+      );
+      observer.relativeToViewport().observe(observeTarget, observeCallback);
+    });
+
+    return () => {
+      observer?.disconnect();
+    };
+  }, []);
 
   const activeItem = swiperList[index];
   const activeDataItem = activeItem?.dataItem;
@@ -265,11 +274,7 @@ const CreativeColumns:FC<IProps> = (props) => {
               <SwiperItem 
                 key={index}
                 className='prod-pic-swiper-item'
-                onClick={() => {
-                  if (activeDataItem?.button?.redirectContent) {
-                    jump(activeDataItem?.button?.redirectContent)
-                  }
-                }}
+                onClick={() => {}}
               >
                 {item.type === 'image' && (
                   <Image 
