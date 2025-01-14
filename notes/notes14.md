@@ -81,6 +81,267 @@ const excludeChineseRules = [{ pattern: /^[^\u4e00-\u9fa5]+$/, message: "不支�
 微信小程序两种不同轮播图效果的实现（使用Taro框架）
 1. 左右滑动轮播
 ```
+import {
+  FC,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
+import Taro, {
+  createVideoContext, pxTransform,
+} from '@tarojs/taro'
+import { 
+  View, 
+  Image,
+  Video,
+  Swiper,
+  SwiperItem,
+  ScrollView,
+} from '@tarojs/components'
+import './CreativeColumns.scss'
+import classNames from 'classnames'
+import { staticHost } from '@/config'
+import CustomSwiperIndicator from '@/components/CustomSwiperIndicator'
+import useIntersectionObserver from '@/hook/useIntersectionObserver'
+
+export interface ISwiperItem {
+  type: 'image' | 'video',
+  url: string,
+  cover?: string,
+  dataItem?: any,
+}
+
+interface IProps {
+  swiperList: ISwiperItem[]
+}
+
+const CreativeColumns:FC<IProps> = (props) => {
+  const {
+    swiperList,
+  } = props;
+  const observerEleId = 'creative-swiper-wrapper';
+  // 当前轮播处在哪项
+  const [index, setIndex] = useState(0)
+  const indexRef = useRef(0)
+
+  const [isPlayVideo, setIsPlayVideo] = useState(false);
+  const [inViewport, setInViewport] = useState(false); // 轮播区是否处于视口中
+
+  const [videoMuted, setVideoMuted] = useState(true);
+
+  const setVideoPlayStatus = (index: number, type: "play" | "pause" | "stop") => {
+    let videoContext = createVideoContext(`hj-landing-creative-video-${index}`);
+    if (type == "play") {
+      videoContext.play();
+    } else if (type == "pause") {
+      videoContext.pause();
+    } else if (type == "stop") {
+      videoContext.stop();
+    }
+  };
+
+  const onChange = (e) => {
+    const current = e.detail.current;
+    setIndex(current);
+    indexRef.current = current;
+    setIsPlayVideo(false);
+
+    Taro.nextTick(() => {
+      // 将所有其它视频暂停
+      swiperList.forEach((sItem, sIndex) => {
+        if (sIndex !== current && sItem.type === "video") {
+          setVideoPlayStatus(sIndex, "pause");
+        }
+      });
+      // 将当前视频播放
+      const curItem = swiperList[current];
+      if (curItem?.type === 'video') {
+        setVideoPlayStatus(current, "play");
+        setIsPlayVideo(true);
+      }
+    });
+  }
+
+  const [toChildViewId, setToChildViewId] = useState<string>()
+  useEffect(() => {
+    if (!swiperList?.length) return;
+    Taro.nextTick(() => {
+      const curId = `creative-tab-item-${index}`;
+      setToChildViewId(curId);
+    });
+  }, [swiperList, index]);
+
+  useEffect(() => {
+    if (!swiperList?.length) return;
+    // 进入视口后播放当前视频，离开视口后暂停当前视频。（初始状态下第一个视频会自动播放）
+    const curItemIsVideo = swiperList?.[indexRef.current]?.type === "video";
+    if (inViewport) {
+      console.log("creative轮播区进入视口");
+      if (curItemIsVideo) {
+        setVideoPlayStatus(indexRef.current, "play");
+        setIsPlayVideo(true);
+      }
+    } else {
+      console.log("creative轮播区离开视口");
+      if (curItemIsVideo) {
+        setVideoPlayStatus(indexRef.current, "pause");
+        setIsPlayVideo(false);
+      }
+    }
+  }, [swiperList, inViewport]);
+
+  useIntersectionObserver({
+    type: "relativeToViewport",
+    observeTarget: '#' + observerEleId,
+    observeCallback: (res) => {
+      console.log("observe-callback", res?.intersectionRatio);
+      if (res.intersectionRatio > 0) {
+        // 轮播区进入视口
+        setInViewport(true);
+      } else {
+        // 轮播区离开视口
+        setInViewport(false);
+      }
+    },
+  });
+
+  const activeItem = swiperList[index];
+  const activeDataItem = activeItem?.dataItem;
+  return (
+    <View className='CreativeColumns'>
+      <View className="sectionNameWrap">
+        <ScrollView 
+          className="sectionName"
+          scrollX
+          enableFlex
+          scrollWithAnimation
+          scrollIntoView={toChildViewId}
+          showScrollbar={false}
+          enhanced
+        >
+          {swiperList.map((item, ind) => {
+            return (
+              <View 
+                id={`creative-tab-item-${ind}`}
+                key={ind}
+                className={classNames("sectionNameItem", {
+                  "active": ind === index,
+                })}
+                onClick={() => {
+                  if (ind !== index) {
+                    setIndex(ind);
+                    indexRef.current = ind;
+                  }
+                }}
+              >
+                {item?.dataItem?.sectionName}
+              </View>
+            );
+          })}
+        </ScrollView>
+      </View>
+
+      <View className='swiper-wrapper' id={observerEleId}>
+        <Swiper
+          className={'prod-pic-swiper'}
+          indicatorDots={false}
+          indicatorColor='#999'
+          indicatorActiveColor='#333'
+          autoplay={!isPlayVideo}
+          current={index}
+          onChange={onChange}
+          circular // 无缝衔接轮播
+          interval={5000} // 自动切换等待时间间隔
+          duration={500} // 滑动动画时长
+          nextMargin={pxTransform(35)} // 右侧留出多余部分显示下一帧轮播图
+        >
+          {swiperList.map((item, index) => {
+            return (
+              <SwiperItem 
+                key={index}
+                className='prod-pic-swiper-item'
+                onClick={() => {
+                  if (activeDataItem?.button?.redirectContent) {
+                    jump(activeDataItem?.button?.redirectContent)
+                  }
+                }}
+              >
+                {item.type === 'image' && (
+                  <Image 
+                    className={'prod-pic-item'}
+                    src={item.url}
+                    mode="aspectFill"
+                    lazyLoad
+                  />
+                )}
+                {item.type === 'video' && (
+                  <View className={classNames('prod-video-item')}>
+                    <Video
+                      id={`hj-landing-creative-video-${index}`}
+                      className={'prod-video'}
+                      objectFit='cover'
+                      src={item.url}
+                      poster={item.cover || undefined}
+                      // onPlay={e => {
+                      //   setIsPlayVideo(true);
+                      // }}
+                      // onPause={e => {
+                      //   setIsPlayVideo(false);
+                      // }}
+                      onEnded={() => {
+                        console.log("视频播放结束")
+                        setIsPlayVideo(false);
+                      }}
+                      autoplay={false}
+                      loop={false}
+                      muted={videoMuted}
+                      controls={false}
+                      enableProgressGesture={false}
+                      showFullscreenBtn={false}
+                      showPlayBtn={false}
+                      showCenterPlayBtn={false}
+                    />
+                    {/* {!isPlayVideo && (
+                      <Image 
+                        className={classNames('prod-video-play-icon')}
+                        src={playIcon} 
+                        onClick={() => {
+                          setVideoPlayStatus('play');
+                        }}
+                      />
+                    )} */}
+                    <Image
+                      className={'mute-btn'}
+                      mode="aspectFit"
+                      src={videoMuted ? `${staticHost}/muted.png?key=1` : `${staticHost}/mute.png?key=1`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setVideoMuted(!videoMuted);
+                      }}
+                    />
+                  </View>
+                )}
+              </SwiperItem>
+            )
+          })}
+        </Swiper>
+        <CustomSwiperIndicator 
+          length={swiperList.length} 
+          currentIndex={index} 
+        />
+      </View>
+      <View className='btm-info'>
+        {!!activeDataItem?.themeText && (
+          <View className="themeText">{activeDataItem?.themeText}</View>
+        )}
+      </View>
+    </View>
+  )
+}
+
+export default CreativeColumns;
+
 
 ```
 2. 点击切换轮播
