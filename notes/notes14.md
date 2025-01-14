@@ -99,11 +99,11 @@ import {
   SwiperItem,
   ScrollView,
 } from '@tarojs/components'
-import './CreativeColumns.scss'
 import classNames from 'classnames'
 import { staticHost } from '@/config'
 import CustomSwiperIndicator from '@/components/CustomSwiperIndicator'
 import useIntersectionObserver from '@/hook/useIntersectionObserver'
+import './CreativeColumns.scss'
 
 export interface ISwiperItem {
   type: 'image' | 'video',
@@ -113,6 +113,7 @@ export interface ISwiperItem {
 }
 
 interface IProps {
+  // 轮播列表
   swiperList: ISwiperItem[]
 }
 
@@ -120,7 +121,10 @@ const CreativeColumns:FC<IProps> = (props) => {
   const {
     swiperList,
   } = props;
+
+  // 轮播区元素ID
   const observerEleId = 'creative-swiper-wrapper';
+
   // 当前轮播处在哪项
   const [index, setIndex] = useState(0)
   const indexRef = useRef(0)
@@ -341,7 +345,6 @@ const CreativeColumns:FC<IProps> = (props) => {
 }
 
 export default CreativeColumns;
-
 
 ```
 2. 点击切换轮播
