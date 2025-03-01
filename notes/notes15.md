@@ -11,7 +11,7 @@ react-native版本：0.73.6
 第一步：在rn项目上运行`yarn start && yarn android`，即`react-native start && react-native run-android`。  
 第二步：在rn项目上找到包`android/app/build/outputs/apk/debug/app-debug.apk`并手动传输、安装到您的android真机设备上。  
 第三步：使用扩展坞数据线将您的android真机连接到macOS笔记本电脑，并打开android真机的开发者选项和允许USB调试。  
-第四步：在macOS命令行执行`adb devices`查看当前电脑总共连接了几台adb设备，输出结果如下
+第四步：在macOS另一个终端命令行执行`adb devices`查看当前电脑总共连接了几台adb设备，输出结果如下
 ```
 List of devices attached
 10AE1K1SYA00148	device
