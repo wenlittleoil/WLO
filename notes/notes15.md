@@ -35,7 +35,7 @@ emulator-5554	device
         initialRatio: 1, // 初始时完全呈现也不触发观测回调
       }
     );
-    const observeTarget = '.item';
+    const observeTarget = '.item'; // 观测元素
     const observeCallback = (res) => {
       if (res.intersectionRatio === 1) {
         console.log(res.id + "列表元素完全进入视口");
@@ -69,6 +69,10 @@ emulator-5554	device
           className="item"
           // data-index={index} // 不支持自定义的data-*属性
           id={`item-${index}`}
+          style={{
+            width: "100%",
+            height: "100px",
+          }}
         >
           列表元素项{index}
         </View>
