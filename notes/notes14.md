@@ -263,7 +263,10 @@ const CreativeColumns:FC<IProps> = (props) => {
           indicatorActiveColor='#333'
           autoplay={!isPlayVideo}
           current={index}
-          onChange={onChange}
+
+          // onChange={onChange} // 息屏偶现轮播疯狂闪烁问题
+          onAnimationFinish={onChange}
+
           circular // 无缝衔接轮播
           interval={5000} // 自动切换等待时间间隔
           duration={500} // 滑动动画时长
