@@ -20,5 +20,58 @@ emulator-5554	device
 例如上述输出结果中的`10AE1K1SYA00148`即为您的android真机，然后命令行执行`adb -s 10AE1K1SYA00148 reverse tcp:8081 tcp:8081`将您的android真机端口代理到macOS电脑，从而可以访问本地dev server进行开发调试。  
 第五步：重新启动您android真机上已安装的apk应用。
 
+## 53.
+微信小程序Taro中，滑动列表时，动态侦测当前可视的列表元素
+```
+  // 当前可视的列表元素索引
+  const [activeIndex, setActiveIndex] = useState<number>();
+  useEffect(() => {
+    // 滑动时切换可视元素索引
+    const observer = Taro.createIntersectionObserver(
+      Taro.getCurrentInstance().page as PageInstance,
+      {
+        thresholds: [1],
+        observeAll: true,
+        initialRatio: 1, // 初始时完全呈现也不触发观测回调
+      }
+    );
+    const observeTarget = '.item';
+    const observeCallback = (res) => {
+      if (res.intersectionRatio === 1) {
+        console.log(res.id + "列表元素完全进入视口");
+        const indexStr = res.id?.replace("item-", "");
+        if (indexStr) {
+          const index = Number(indexStr);
+          setActiveIndex(index);
+        }
+      }
+    }
+    observer.relativeToViewport().observe(observeTarget, observeCallback);
+    return () => {
+      observer?.disconnect();
+    }
+    // list为源数据列表
+  }, [list]);
 
+  <ScrollView
+    style={{
+      width: "100vw",
+      height: "100vh",
+    }}
+    scrollY
+    scrollWithAnimation
+  >
+    {list.map((item, index) => {
+      return (
+        <View
+          key={item.id}
+          className="item"
+          // data-index={index} // 不支持自定义的data-*属性
+          id={`item-${index}`}
+        >
+        </View>
+      )
+    })}
+  </ScrollView>
+```
 
