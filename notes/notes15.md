@@ -53,6 +53,7 @@ emulator-5554	device
     // list为源数据列表
   }, [list]);
 
+  // 渲染源数据列表list
   <ScrollView
     style={{
       width: "100vw",
@@ -69,6 +70,7 @@ emulator-5554	device
           // data-index={index} // 不支持自定义的data-*属性
           id={`item-${index}`}
         >
+          列表元素项{index}
         </View>
       )
     })}
