@@ -3,7 +3,7 @@ macos检索磁盘目录大小占用
 ```
 sudo du -d 1 -h | sort -h
 ```
-可删文件：
+可清理删除的文件：
 1. `~/Library/Containers`下的微信com.tencent.xinWeChat/企微com.tencent.WeWorkMac文件；
 2. `~/Library/Caches`下特定应用的缓存文件；
 
