@@ -88,7 +88,7 @@ emulator-5554	device
 import sha1 from 'sha1';
 
 // 生成特定长度的随机字符串
-export const generateRandomString = (length: number) => {
+const generateRandomString = (length: number) => {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const charactersLength = characters.length;
